@@ -3,7 +3,7 @@ const client = new Discord.Client();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    client.User.setGame("!sec help");
+    client.user.setActivity(`this won't appear in the bot's custom status!`, { type: 4 });
 });
 
 client.on('message', msg => {
