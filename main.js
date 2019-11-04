@@ -1,7 +1,7 @@
 /*
 
-# This bot created for deciding any kind stuff
-# If you cant choose one thing you can let the bot choose for you
+# This bot created for deciding all kind of stuff
+# You can use it if you are stuck between multiple options
 # Example usage !sec [element1] [element2] 
 # Elements must split by space
 # Required at least 2 element
@@ -14,7 +14,7 @@ const client = new Discord.Client();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    client.user.setGame("!sec help");
+    client.user.setActivity("!sec help");
 });
 
 // This function called when someone send message
