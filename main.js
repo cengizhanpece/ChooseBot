@@ -70,7 +70,7 @@ client.on('message', async msg => {
 
 async function handleVideo(video, msg, voiceChannel){
     const serverQueue = queue.get(msg.guild.id);
-    console.log("Video:  " + video);
+    console.log(video);
     const song = {
         id: video.id,
         title: video.title,
@@ -116,10 +116,9 @@ function play(guild, song) {
         queue.delete(guild.id);
         return;
     }
-        const dispatcher = serverQueue.connection.playStream(ytdl(song.url, {
-            filter: "audioonly"
-        }))
+        const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
             .on('end', reason => {
+                console.log(song.url);
                 if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
                 else console.log("reason: " + reason);
                 serverQueue.songs.shift();
