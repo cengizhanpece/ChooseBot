@@ -116,21 +116,17 @@ function play(guild, song) {
         queue.delete(guild.id);
         return;
     }
-    console.log(" ServerQueQue.Songs: "+serverQueue.songs);
-    if(!ifplaying){
-        const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+        const dispatcher = serverQueue.connection.playStream(ytdl(song.url, {
+            filter: "audioonly"
+        }))
             .on('end', reason => {
                 if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
                 else console.log("reason: " + reason);
                 serverQueue.songs.shift();
-                ifplaying = false;
                 play(guild, serverQueue.songs[0]);
             })
             .on('error', error => console.error('on Error Dispatcher:  ' + error));
         dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-        ifplaying = true;
-    }
-    
 
 }
 
