@@ -11,12 +11,12 @@
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const {Util} = require('discord.js');
 const GOOGLE_API_KEY = process.env.GOOGLE_API;
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const youtube = new YouTube('AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI');
 const queue = new Map();
-let ifplaying = false;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -73,7 +73,7 @@ async function handleVideo(video, msg, voiceChannel){
     console.log(video);
     const song = {
         id: video.id,
-        title: video.title,
+        title: Util.escapeMarkdown(video.title),
         url: `https://www.youtube.com/watch?v=${video.id}`
     };
     if (!serverQueue) {
@@ -101,8 +101,8 @@ async function handleVideo(video, msg, voiceChannel){
     } else {
         serverQueue.songs.push(song);
         console.log(serverQueue.songs);
-        if (playlist) console.log("Playlist var");
-        
+        if (playlist) return undefined;
+        else return msg.channel.send(`${song.title}** çalıyor`);
     }
     return undefined;
 }
