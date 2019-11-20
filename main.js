@@ -33,6 +33,9 @@ client.on('message', async msg => {
         if (!voiceChannel) return msg.channel.send('Önce Odaya Gir Orospu Evladı!');
         try {
             var video = await youtube.getVideo('https://www.youtube.com/watch?v=o17AgbomJag');
+            var connection = await voiceChannel.join();
+            
+            play(msg.guild, `https://www.youtube.com/watch?v=${video.id}`, voiceChannel, connection);
             return handleVideo(video, msg, voiceChannel);
         }
         catch (error) {
@@ -101,28 +104,27 @@ async function handleVideo(video, msg, voiceChannel){
     } else {
         serverQueue.songs.push(song);
         console.log(serverQueue.songs);
-        if (playlist) return undefined;
-        else return msg.channel.send(`${song.title}** çalıyor`);
+        msg.channel.send(`${song.title}** çalıyor`);
     }
     return undefined;
 }
 
-function play(guild, song) {
+function play(guild, song, voiceChannel, connection) {
     const serverQueue = queue.get(guild.id);
+    console.log(song);
 
     if (!song) {
         console.log("!song ifinde");
-        serverQueue.voiceChannel.leave();
+        
         queue.delete(guild.id);
         return;
     }
-        const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+        const dispatcher = connection.playStream(ytdl(song))
             .on('end', reason => {
                 console.log(song.url);
                 if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
                 else console.log("reason: " + reason);
-                serverQueue.songs.shift();
-                play(guild, serverQueue.songs[0]);
+                voiceChannel.leave();
             })
             .on('error', error => console.error('on Error Dispatcher:  ' + error));
         dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
