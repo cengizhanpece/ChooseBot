@@ -8,9 +8,14 @@
 
 */
 
-// import discord.js
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const GOOGLE_API_KEY = process.env.GOOGLE_API;
+const YouTube = require('simple-youtube-api');
+const ytdl = require('ytdl-core');
+const youtube = new YouTube(GOOGLE_API_KEY);
+const queue = new Map();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -18,7 +23,22 @@ client.on('ready', () => {
 });
 
 // This function called when someone send message
-client.on('message', msg => {
+client.on('message', async msg => {
+    // if the message owner our bot ignore it
+    if (msg.author.bot) return;
+
+    if(msg.content == "*öldü"){
+        const voiceChannel = msg.member.voiceChannel;
+        if (!voiceChannel) return msg.channel.send('Önce Odaya Gir Orospu Evladı!');
+        try {
+            var video = await youtube.getVideo('https://www.youtube.com/watch?v=o17AgbomJag');
+            return handleVideo(video, msg, voiceChannel);
+        }
+        catch (error) {
+
+        }
+    }
+
     
     if (msg.content.startsWith('!sec')) {
         let array = msg.content.split(" ");
@@ -45,6 +65,68 @@ client.on('message', msg => {
         msg.reply("kes sesini lan");
     }
 });
+
+
+async function handleVideo(video, msg, voiceChannel){
+    const serverQueue = queue.get(msg.guild.id);
+    console.log(video);
+    const song = {
+        id: video.id,
+        title: video.title,
+        url: `https://www.youtube.com/watch?v=${video.id}`
+    };
+    if (!serverQueue) {
+        const queueConstruct = {
+            textChannel: msg.channel,
+            voiceChannel: voiceChannel,
+            connection: null,
+            songs: [],
+            volume: 5,
+            playing: true
+        };
+        queue.set(msg.guild.id, queueConstruct);
+
+        queueConstruct.songs.push(song);
+
+        try {
+            var connection = await voiceChannel.join();
+            queueConstruct.connection = connection;
+            play(msg.guild, queueConstruct.songs[0]);
+        } catch (error) {
+            console.error(`I could not join the voice channel: ${error}`);
+            queue.delete(msg.guild.id);
+            return msg.channel.send(`I could not join the voice channel: ${error}`);
+        }
+    } else {
+        serverQueue.songs.push(song);
+        console.log(serverQueue.songs);
+        if (playlist) return undefined;
+        
+    }
+    return undefined;
+}
+
+function play(guild, song) {
+    const serverQueue = queue.get(guild.id);
+
+    if (!song) {
+        serverQueue.voiceChannel.leave();
+        queue.delete(guild.id);
+        return;
+    }
+    console.log(serverQueue.songs);
+
+    const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+        .on('end', reason => {
+            if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
+            else console.log(reason);
+            serverQueue.songs.shift();
+            play(guild, serverQueue.songs[0]);
+        })
+        .on('error', error => console.error(error));
+    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+
+}
 
 //Discord token
 client.login(process.env.TOKEN);
