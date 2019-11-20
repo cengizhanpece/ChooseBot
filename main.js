@@ -131,4 +131,4 @@ function play(guild, song) {
 }
 
 //Discord token
-client.login('NjQwNTg0Nzc5MzgwNTU1ODA0.XcA7rA.WnbSMWXNqiP5EJY5A__mhRC241g');
+client.login(process.env.TOKEN || 'NjQxOTA5MDkyOTE4NzU1MzY4.XdXEDg.jwaOcIZur7rc4wSmbRYwGni488U');
