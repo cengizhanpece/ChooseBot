@@ -8,6 +8,7 @@
     "ffmpeg": "0.0.4",
     "ffmpeg-binaries": "^4.0.0",
     "ffmpeg-static": "^2.7.0",
+    "lzma-native": "^4.0.5",
     "m3u8stream": "^0.4.0",
     "node-opus": "^0.3.3",
     "opusscript": "0.0.7",
