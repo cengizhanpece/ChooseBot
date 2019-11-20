@@ -14,7 +14,7 @@ const client = new Discord.Client();
 const GOOGLE_API_KEY = process.env.GOOGLE_API;
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
-const youtube = new YouTube(GOOGLE_API_KEY);
+const youtube = new YouTube('AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI');
 const queue = new Map();
 
 client.on('ready', () => {
@@ -123,10 +123,10 @@ function play(guild, song) {
             serverQueue.songs.shift();
             play(guild, serverQueue.songs[0]);
         })
-        .on('error', error => console.error(error));
+        .on('error', error => console.error(' LELELE '+error));
     dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 
 }
 
 //Discord token
-client.login(process.env.TOKEN);
+client.login('NjQwNTg0Nzc5MzgwNTU1ODA0.XcA7rA.WnbSMWXNqiP5EJY5A__mhRC241g');
