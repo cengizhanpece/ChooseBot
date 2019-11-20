@@ -16,6 +16,7 @@ const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const youtube = new YouTube('AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI');
 const queue = new Map();
+let ifplaying = false;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -69,7 +70,7 @@ client.on('message', async msg => {
 
 async function handleVideo(video, msg, voiceChannel){
     const serverQueue = queue.get(msg.guild.id);
-    console.log(video);
+    console.log("Video:  " + video);
     const song = {
         id: video.id,
         title: video.title,
@@ -100,7 +101,7 @@ async function handleVideo(video, msg, voiceChannel){
     } else {
         serverQueue.songs.push(song);
         console.log(serverQueue.songs);
-        if (playlist) return undefined;
+        if (playlist) console.log("Playlist var");
         
     }
     return undefined;
@@ -110,21 +111,26 @@ function play(guild, song) {
     const serverQueue = queue.get(guild.id);
 
     if (!song) {
+        console.log("!song ifinde");
         serverQueue.voiceChannel.leave();
         queue.delete(guild.id);
         return;
     }
-    console.log(serverQueue.songs);
-
-    const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
-        .on('end', reason => {
-            if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
-            else console.log(reason);
-            serverQueue.songs.shift();
-            play(guild, serverQueue.songs[0]);
-        })
-        .on('error', error => console.error(' LELELE '+error));
-    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+    console.log(" ServerQueQue.Songs: "+serverQueue.songs);
+    if(!ifplaying){
+        const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+            .on('end', reason => {
+                if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
+                else console.log("reason: " + reason);
+                serverQueue.songs.shift();
+                ifplaying = false;
+                play(guild, serverQueue.songs[0]);
+            })
+            .on('error', error => console.error('on Error Dispatcher:  ' + error));
+        dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+        ifplaying = true;
+    }
+    
 
 }
 
