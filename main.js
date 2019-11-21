@@ -61,6 +61,11 @@ client.on('message', async msg => {
 });
 
 async function Sounds(msg){
+    if(msg.content == "*help")
+    {
+        msg.reply("\`\`\`*öldü=Adam Öldü Amk\n*ben=Ben Orospu Çocuğuyum(Ferit)\n*bruh=Bruh\n*ah=Ahlayan Kadın\`\`\`");
+        return;
+    }
     let song;
     switch (msg.content) {
         case "*öldü":
