@@ -80,6 +80,9 @@ async function Sounds(msg){
         case "*ah":
             song = "moan.mp3";
             break;
+        case "*siktimseni":
+            song = "siktimseni.mp3";
+            break;
     }
 
     // get the voice channel
