@@ -67,7 +67,7 @@ async function Sounds(msg){
             song = "oldu.mp3";
             break;
         case "*ben":
-            song = "ben.mp3";
+            song = "orospucocugu.mp3";
             break;
         case "*bruh":
             song = "bruh.mp3";
