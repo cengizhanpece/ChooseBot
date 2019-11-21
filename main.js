@@ -16,7 +16,7 @@ const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const youtube = new YouTube('AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI');
 const queue = new Map();
-
+let available = true;
 
 
 
@@ -71,43 +71,6 @@ client.on('message', async msg => {
 });
 
 
-async function handleVideo(video, msg, voiceChannel){
-    const serverQueue = queue.get(msg.guild.id);
-    console.log(video);
-    const song = {
-        id: video.id,
-        title: Util.escapeMarkdown(video.title),
-        url: `https://www.youtube.com/watch?v=${video.id}`
-    };
-    if (!serverQueue) {
-        const queueConstruct = {
-            textChannel: msg.channel,
-            voiceChannel: voiceChannel,
-            connection: null,
-            songs: [],
-            volume: 5,
-            playing: true
-        };
-        queue.set(msg.guild.id, queueConstruct);
-
-        queueConstruct.songs.push(song);
-
-        try {
-            var connection = await voiceChannel.join();
-            queueConstruct.connection = connection;
-            play(msg.guild, queueConstruct.songs[0]);
-        } catch (error) {
-            console.error(`I could not join the voice channel: ${error}`);
-            queue.delete(msg.guild.id);
-            return msg.channel.send(`I could not join the voice channel: ${error}`);
-        }
-    } else {
-        serverQueue.songs.push(song);
-        console.log(serverQueue.songs);
-        msg.channel.send(`${song.title}** çalıyor`);
-    }
-    return undefined;
-}
 
 function play(guild, song, voiceChannel, connection) {
     const serverQueue = queue.get(guild.id);
@@ -119,12 +82,20 @@ function play(guild, song, voiceChannel, connection) {
         queue.delete(guild.id);
         return;
     }
+    if(!available) return;
         const dispatcher = connection.playStream(ytdl(song))
+            .on('ready', () => {
+                available = false;
+            })
             .on('end', reason => {
                 console.log(song.url);
                 if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
                 else console.log("reason: " + reason);
-                voiceChannel.leave();
+                setTimeout(() => {
+                    available = true;
+                    voiceChannel.leave();
+                },5000);
+                
             })
             .on('error', error => console.error('on Error Dispatcher:  ' + error));
         dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
