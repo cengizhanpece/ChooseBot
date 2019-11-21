@@ -12,11 +12,22 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const {Util} = require('discord.js');
-const GOOGLE_API_KEY = process.env.GOOGLE_API;
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const youtube = new YouTube('AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI');
 const queue = new Map();
+
+
+client.music = require("discord.js-musicbot-addon");
+
+// Now we start the music module.
+client.music.start(bot, {
+    // Set the api key used for YouTube.
+    // This is required to run the bot.
+    youtubeKey: 'AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI',
+    botPrefix: '*'
+});
+
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -34,9 +45,7 @@ client.on('message', async msg => {
         try {
             var video = await youtube.getVideo('https://www.youtube.com/watch?v=o17AgbomJag');
             var connection = await voiceChannel.join();
-            
             play(msg.guild, `https://www.youtube.com/watch?v=${video.id}`, voiceChannel, connection);
-            return handleVideo(video, msg, voiceChannel);
         }
         catch (error) {
 
