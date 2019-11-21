@@ -61,7 +61,7 @@ client.on('message', async msg => {
 async function Sounds(msg){
     if(msg.content == "*help")
     {
-        msg.reply("\`\`\`*öldü=Adam Öldü Amk\n*ben=Ben Orospu Çocuğuyum(Ferit)\n*bruh=Bruh\n*ah=Ahlayan Kadın\n*siktimseni=Siktim Seni\n*aaa=AaaKikiki\`\`\`");
+        msg.reply("\`\`\`*öldü=Adam Öldü Amk\n*ben=Ben Orospu Çocuğuyum(Ferit)\n*bruh=Bruh\n*siktimseni=Siktim Seni\n*aaa=AaaKikiki\`\`\`");
         return;
     }
     let song;
@@ -74,9 +74,6 @@ async function Sounds(msg){
             break;
         case "*bruh":
             song = "bruh.mp3";
-            break;
-        case "*ah":
-            song = "moan.mp3";
             break;
         case "*siktimseni":
             song = "siktimseni.mp3";
