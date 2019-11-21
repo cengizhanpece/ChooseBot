@@ -29,25 +29,8 @@ client.on('message', async msg => {
     // if the message owner our bot ignore it
     if (msg.author.bot) return;
 
-    if(msg.content == "*öldü"){
-        const voiceChannel = msg.member.voice.channel;
-        
-        if (!voiceChannel) return msg.channel.send('Önce Odaya Gir Orospu Evladı!');
-        try {
-            
-            var connection = await voiceChannel.join();
-            const dispatcher = connection.play('./sounds/oldu.mp3')
-                .on('end', reason => {
-                    if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
-                    else console.log("reason: " + reason);
-                    voiceChannel.leave();
-                })
-                .on('error', error => console.error('on Error Dispatcher:  ' + error));
-            dispatcher.setVolumeLogarithmic(1);
-        }
-        catch (error) {
-            console.log(error);
-        }
+    if(msg.content.startsWith('*')){
+        Sounds(msg);
     }
 
     
@@ -77,6 +60,42 @@ client.on('message', async msg => {
     }
 });
 
+async function Sounds(msg){
+    let song;
+    switch (msg.content) {
+        case "*öldü":
+            song = "oldu.mp3";
+            break;
+        case "*ben":
+            song = "ben.mp3";
+            break;
+        case "*bruh":
+            song = "bruh.mp3";
+            break;
+    }
+
+    // get the voice channel
+    const voiceChannel = msg.member.voice.channel;
+    // if voice channel can't find that means owner of the message not in a voice channel. Throw an error.
+    if (!voiceChannel) return msg.channel.send('Önce Odaya Gir Orospu Evladı!');
+    try {
+        //get the voice channel connection
+        var connection = await voiceChannel.join();
+        // play the mp3
+        const dispatcher = connection.play('./sounds/' + song)
+            .on('end', reason => {
+                if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
+                else console.log("reason: " + reason);
+                voiceChannel.leave();
+            })
+            .on('error', error => console.error('on Error Dispatcher:  ' + error));
+        // set volume
+        dispatcher.setVolumeLogarithmic(1);
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 
 //Discord token
 client.login(process.env.TOKEN || 'NjQxOTA5MDkyOTE4NzU1MzY4.XdXEDg.jwaOcIZur7rc4wSmbRYwGni488U');
