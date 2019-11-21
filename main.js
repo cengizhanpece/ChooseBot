@@ -18,15 +18,6 @@ const youtube = new YouTube('AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI');
 const queue = new Map();
 
 
-client.music = require("discord.js-musicbot-addon");
-
-// Now we start the music module.
-client.music.start(bot, {
-    // Set the api key used for YouTube.
-    // This is required to run the bot.
-    youtubeKey: 'AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI',
-    botPrefix: '*'
-});
 
 
 client.on('ready', () => {
