@@ -7,7 +7,7 @@
   "description": "",
   "main": "main.js",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "github:discordjs/discord.js",
     "ffmpeg": "0.0.4",
     "ffmpeg-binaries": "^4.0.0",
     "ffmpeg-static": "^2.7.0",

@@ -30,12 +30,13 @@ client.on('message', async msg => {
     if (msg.author.bot) return;
 
     if(msg.content == "*öldü"){
-        const voiceChannel = msg.member.voiceChannel;
+        const voiceChannel = msg.member.voice.channel;
+        
         if (!voiceChannel) return msg.channel.send('Önce Odaya Gir Orospu Evladı!');
         try {
             
             var connection = await voiceChannel.join();
-            const dispatcher = connection.playFile('./sounds/oldu.mp3')
+            const dispatcher = connection.play('./sounds/oldu.mp3')
                 .on('end', reason => {
                     if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
                     else console.log("reason: " + reason);
@@ -76,21 +77,6 @@ client.on('message', async msg => {
     }
 });
 
-
-
-function play(guild, song, voiceChannel, connection) {
-    const serverQueue = queue.get(guild.id);
-    console.log(song);
-
-    if (!song) {
-        console.log("!song ifinde");
-        
-        queue.delete(guild.id);
-        return;
-    }
-        
-
-}
 
 //Discord token
 client.login(process.env.TOKEN || 'NjQxOTA5MDkyOTE4NzU1MzY4.XdXEDg.jwaOcIZur7rc4wSmbRYwGni488U');
