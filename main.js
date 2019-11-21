@@ -83,7 +83,7 @@ function play(guild, song, voiceChannel, connection) {
         return;
     }
     if(!available) return;
-        const dispatcher = connection.playStream(ytdl(song), { seek: 5 })
+        const dispatcher = connection.playStream(ytdl(song, {filter: 'audioonly'}), { seek: 5 })
             .on('ready', () => {
                 available = false;
             })
