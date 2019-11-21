@@ -21,7 +21,7 @@ const queue = new Map();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    client.user.setActivity("!sec help");
+    client.user.setActivity("!sec help and *help");
 });
 
 // This function called when someone send message
@@ -55,15 +55,13 @@ client.on('message', async msg => {
         let randomNumber = Math.floor(Math.random() * array.length);
         //reply a array index with choosen by random
         msg.reply("Kaderinde " + array[randomNumber] + " varmış");
-    } else if (msg.author.username == "catay5" && msg.author.discriminator == "1235") {
-        msg.reply("kes sesini lan");
     }
 });
 
 async function Sounds(msg){
     if(msg.content == "*help")
     {
-        msg.reply("\`\`\`*öldü=Adam Öldü Amk\n*ben=Ben Orospu Çocuğuyum(Ferit)\n*bruh=Bruh\n*ah=Ahlayan Kadın\`\`\`");
+        msg.reply("\`\`\`*öldü=Adam Öldü Amk\n*ben=Ben Orospu Çocuğuyum(Ferit)\n*bruh=Bruh\n*ah=Ahlayan Kadın\n*siktimseni=Siktim Seni\n*aaa=AaaKikiki\`\`\`");
         return;
     }
     let song;
@@ -82,6 +80,9 @@ async function Sounds(msg){
             break;
         case "*siktimseni":
             song = "siktimseni.mp3";
+            break;
+        case "*aaa":
+            song = "aaakikiki.mp3";
             break;
     }
 
