@@ -16,7 +16,6 @@ const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const youtube = new YouTube('AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI');
 const queue = new Map();
-let available = true;
 
 
 
@@ -34,12 +33,19 @@ client.on('message', async msg => {
         const voiceChannel = msg.member.voiceChannel;
         if (!voiceChannel) return msg.channel.send('Önce Odaya Gir Orospu Evladı!');
         try {
-            var video = await youtube.getVideo('https://www.youtube.com/watch?v=o17AgbomJag');
+            
             var connection = await voiceChannel.join();
-            play(msg.guild, `https://www.youtube.com/watch?v=${video.id}`, voiceChannel, connection);
+            const dispatcher = connection.playFile('./sounds/oldu.mp3')
+                .on('end', reason => {
+                    if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
+                    else console.log("reason: " + reason);
+                    voiceChannel.leave();
+                })
+                .on('error', error => console.error('on Error Dispatcher:  ' + error));
+            dispatcher.setVolumeLogarithmic(1);
         }
         catch (error) {
-
+            console.log(error);
         }
     }
 
@@ -82,23 +88,7 @@ function play(guild, song, voiceChannel, connection) {
         queue.delete(guild.id);
         return;
     }
-    if(!available) return;
-        const dispatcher = connection.playFile('./sounds/oldu.mp3')
-            .on('ready', () => {
-                available = false;
-            })
-            .on('end', reason => {
-                console.log(song.url);
-                if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
-                else console.log("reason: " + reason);
-                setTimeout(() => {
-                    available = true;
-                    voiceChannel.leave();
-                },5000);
-                
-            })
-            .on('error', error => console.error('on Error Dispatcher:  ' + error));
-        dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+        
 
 }
 
