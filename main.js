@@ -81,6 +81,8 @@ async function Sounds(msg){
         case "*aaa":
             song = "aaakikiki.mp3";
             break;
+        default:
+            return;
     }
 
     // get the voice channel
