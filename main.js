@@ -62,9 +62,9 @@ client.on('message', async msg => {
 });
 
 async function Sounds(msg){
-    if(msg.content == "*help")
+    if(msg.content.startsWith("*help"))
     {
-        msg.reply("\`\`\`*öldü=Adam Öldü Amk\n*ben=Ben Orospu Çocuğuyum(Ferit)\n*bruh=Bruh\n*siktimseni=Siktim Seni\n*aaa=AaaKikiki\`\`\`");
+        soundHelp(msg);
         return;
     }
     if(msg.content.startsWith("*add"))
@@ -167,7 +167,9 @@ function checkCommandExist(msg){
 function deleteSound(msg){
     command = msg.content.split(" ");
     command.shift();
-
+    commands = commands.filter((element) => {
+        return !(element.command == command[0])
+    });
     const dbClient = new MongoClient(MongoDbUrl, {
         useNewUrlParser: true
     });
@@ -178,9 +180,26 @@ function deleteSound(msg){
         await collection.deleteOne({command : command[0]});
         dbClient.close();
     });
-    commands = commands.filter((element)=>{
-        return !(element.command == command[0])
-    });
+}
+
+function soundHelp(msg){
+    let message =
+        " \`\`\`\n" +
+        "1- Yeni Ses Eklemek İçin = *add *[yeni ses komutu] [yeni ses youtube linki] \n" +
+        "2- Ses Silmek için = *delete *[silinecek sesin komutu]\n" +
+        "3- Kayıtlı Sesleri Listelemek İçin *help sounds \n" +
+        "\`\`\`";
+    if(msg.content == "*help sounds"){
+        let count = 1;
+        message = "\`\`\`\n";
+        commands.forEach(element=>{
+            message += count + "- " + element.command + "\n"; 
+            count++;
+        })
+        message += "\`\`\`\n";
+    }
+    msg.reply(message);
+    
 }
 //Discord token
 client.login(process.env.TOKEN || 'NjQxOTA5MDkyOTE4NzU1MzY4.XdXEDg.jwaOcIZur7rc4wSmbRYwGni488U');
