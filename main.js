@@ -21,7 +21,7 @@ const MongoDbUrl = process.env.MONGODB_URI;
 
 //load all commands to array
 getAllSoundCommandsFromDatabase()
-client.on('ready', async () => {
+client.on('ready', async () => { 
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setActivity("!sec help and *help"); 
 });
