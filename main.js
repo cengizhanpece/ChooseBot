@@ -11,20 +11,19 @@
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const {Util} = require('discord.js');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
-const youtube = new YouTube('AIzaSyBfuJsr2pdSiL9Hb3eZueoHHN52hpYqOaI');
+const youtube = new YouTube(process.env.GOOGLE_API);
 // contains all existing commands
 let commands = [];
 const MongoClient = require('mongodb').MongoClient;
-const MongoDbUrl = 'mongodb+srv://Cengizhan:Cengiz53@cengizhan-qpwns.mongodb.net/test?retryWrites=true&w=majority';
+const MongoDbUrl = process.env.MONGODB_URI;
 
+//load all commands to array
 getAllSoundCommandsFromDatabase()
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setActivity("!sec help and *help"); 
-    
 });
 
 // This function called when someone send message
@@ -83,6 +82,7 @@ async function Sounds(msg){
     if(!checkCommandExist(msg)) return msg.reply("Komut Bulunamadı");
 
     let songUrl;
+    // find the song url from the given command
     commands.forEach(element=>{
         if (element.command == msg.content) songUrl = element.link;
     });
@@ -106,27 +106,33 @@ async function Sounds(msg){
 }
 
 function addNewSound(msg){
+    //get msg
     let array = msg.content.split(" ");
+    //slice the prefix command (example *add, *delete)
     array.shift();
-
+    // Check the msg syntx correct
     if (array.length != 2 && !array[0].startsWith("*")) {
         msg.reply("\`\`\` Doğru kullanım *add [*ses komutu ] [ses yt linki]\`\`\`");
         return;
     }
+    //regExp for youtube link
     var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
     let match = array[1].match(regExp);
+    //if youtube link is correct take link and command to variable
     if (match && match[2].length == 11) {
         let command = {
             command: array[0],
             link: array[1]
         };
+        //push variable to commands array
         commands.push(command);
+        //add command to database
         addNewSoundToDatabase(command);
     }
     else return msg.reply("Youtube linki doğru değil");
     
 }
-
+//Add given sound command to database example {command : "*hi" , link: "some youtube url"}
 function addNewSoundToDatabase(command){
     const dbClient = new MongoClient(MongoDbUrl, {
         useNewUrlParser: true
@@ -138,7 +144,7 @@ function addNewSoundToDatabase(command){
         dbClient.close();
     });
 }
-
+//Get all command from the database that previously added and assign into a commands array
 async function getAllSoundCommandsFromDatabase(){
     const dbClient = new MongoClient(MongoDbUrl, {
         useNewUrlParser: true
@@ -151,7 +157,7 @@ async function getAllSoundCommandsFromDatabase(){
         dbClient.close();
     });
 }
-
+//Check the command exist in commands array
 function checkCommandExist(msg){
     let command = msg.content;
     let found = false;
@@ -163,7 +169,7 @@ function checkCommandExist(msg){
     });
     return found;
 }
-
+//Delete a sound command from commands array and the database
 function deleteSound(msg){
     command = msg.content.split(" ");
     command.shift();
@@ -181,7 +187,7 @@ function deleteSound(msg){
         dbClient.close();
     });
 }
-
+//Help message for usage of the bot
 function soundHelp(msg){
     let message =
         " \`\`\`\n" +
@@ -202,4 +208,4 @@ function soundHelp(msg){
     
 }
 //Discord token
-client.login(process.env.TOKEN || 'NjQxOTA5MDkyOTE4NzU1MzY4.XdXEDg.jwaOcIZur7rc4wSmbRYwGni488U');
+client.login(process.env.TOKEN);
