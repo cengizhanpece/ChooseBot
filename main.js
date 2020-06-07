@@ -18,7 +18,7 @@ const youtube = new YouTube(process.env.GOOGLE_API);
 let commands = [];
 const MongoClient = require('mongodb').MongoClient;
 const MongoDbUrl = process.env.MONGODB_URI;
-
+var voiceChannel;
 //load all commands to array
 getAllSoundCommandsFromDatabase()
 client.on('ready', async () => { 
@@ -30,7 +30,10 @@ client.on('ready', async () => {
 client.on('message', async msg => {
     // if the message owner our bot ignore it
     if (msg.author.bot) return;
-
+    if(msg.content == "*leave" && voiceChannel != ""){
+        voiceChannel.leave();
+        voiceChannel = "";
+    }
     if(msg.content.startsWith('*') && msg.content.length > 1){
         Sounds(msg);
     }
@@ -61,6 +64,7 @@ client.on('message', async msg => {
 });
 
 async function Sounds(msg){
+    if(msg.content == "*leave") return;
     if(msg.content.startsWith("*help"))
     {
         soundHelp(msg);
@@ -76,7 +80,7 @@ async function Sounds(msg){
         return;
     }
     // get the voice channel
-    const voiceChannel = msg.member.voice.channel;
+    voiceChannel = msg.member.voice.channel;
     // if voice channel can't find that means owner of the message not in a voice channel. Throw an error.
     if (!voiceChannel) return msg.channel.send('Önce Odaya Gir Orospu Evladı!');
     if(!checkCommandExist(msg)) return msg.reply("Komut Bulunamadı");
@@ -95,6 +99,7 @@ async function Sounds(msg){
                 if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
                 else console.log("reason: " + reason);
                 voiceChannel.leave();
+                voiceChannel = "";
             })
             .on('error', error => console.error('on Error Dispatcher:  ' + error));
         // set volume
@@ -120,6 +125,7 @@ function addNewSound(msg){
     let match = array[1].match(regExp);
     //if youtube link is correct take link and command to variable
     if (match && match[2].length == 11) {
+        if(array[0] == "*leave") return;
         let command = {
             command: array[0],
             link: array[1]
