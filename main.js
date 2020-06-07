@@ -13,12 +13,12 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
-const youtube = new YouTube(process.env.GOOGLE_API);
+const youtube = new YouTube(process.env.GOOGLE_API || "a");
 // contains all existing commands
 let commands = [];
 const MongoClient = require('mongodb').MongoClient;
-const MongoDbUrl = process.env.MONGODB_URI;
-var voiceChannel;
+const MongoDbUrl = process.env.MONGODB_URI || "mongodb+srv://Cengizhan:Cengiz53@cengizhan-qpwns.mongodb.net/test?retryWrites=true&w=majority";
+var voiceChannel = null;
 //load all commands to array
 getAllSoundCommandsFromDatabase()
 client.on('ready', async () => { 
@@ -30,7 +30,7 @@ client.on('ready', async () => {
 client.on('message', async msg => {
     // if the message owner our bot ignore it
     if (msg.author.bot) return;
-    if(msg.content == "*leave" && voiceChannel != ""){
+    if(msg.content == "*leave" && voiceChannel != null){
         voiceChannel.leave();
         voiceChannel = "";
     }
@@ -95,11 +95,11 @@ async function Sounds(msg){
         var connection = await voiceChannel.join();
         // play the mp3
         const dispatcher = connection.play(ytdl(songUrl))
-            .on('end', reason => {
+            .on('finish', reason => {
                 if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
                 else console.log("reason: " + reason);
                 voiceChannel.leave();
-                voiceChannel = "";
+                voiceChannel = null;
             })
             .on('error', error => console.error('on Error Dispatcher:  ' + error));
         // set volume
@@ -214,4 +214,4 @@ function soundHelp(msg){
     
 }
 //Discord token
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN || "NjQwNTg0Nzc5MzgwNTU1ODA0.Xdmo9w.r9_KZZXxTnBC7g1PITK8is5W-4Y");
