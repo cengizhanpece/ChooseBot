@@ -27,8 +27,11 @@ Bot have two functionality these are:
 
 ### Built With
 *[NODE.JS](https://nodejs.org)
+
 *[Discord.js](https://discord.js.org)
+
 *[FFMPEG](https://www.ffmpeg.org)
+
 *[MONGODB](https://www.mongodb.com/)
 
 ## Getting Started
@@ -59,13 +62,13 @@ node main.js
 
 ## Usage
 1. Usage for youtube sounds
-```sh
+```
 *- Adding new sound = *add *[command name] [youtube url for sound] 
 *- Ses Silmek için = *delete *[command name]
 *- Listing all existing sounds = *help sounds
 ```
 2.Usage for giveaway
-```sh
+```
 !sec [option1] [option2]...
 Seperate all options with space
 ```
